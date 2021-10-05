@@ -1,0 +1,18 @@
+{
+  "name": "applauncher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/AppLauncher.js",
+  "scripts": {
+    "start": "tsc -b tsconfig.json && electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/electron": "^1.6.10",
+    "@types/node": "^16.10.2",
+    "electron": "^15.1.1",
+    "typescript": "^4.4.3"
+  }
+}

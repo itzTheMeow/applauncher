@@ -1,0 +1,27 @@
+<html>
+  <head></head>
+  <body>
+    <template id="template">
+      <div class="app">
+        <img class="app-icon" />
+        <div class="app-name"></div>
+      </div>
+    </template>
+    <div id="apps"></div>
+  </body>
+
+  <script>
+    const apps = [
+      { name: "Discord", launch: "C:\\Users\\AM149072\\dp\\discord-portable.exe", icon: "" },
+    ];
+    apps.forEach((a) => {
+      let app = document.getElementById("template").content.cloneNode(true);
+      app.querySelector(".app-name").innerHTML = a.name;
+      app.onclick = function () {
+        launchApp(a.launch);
+        exit();
+      };
+      document.getElementById("apps").appendChild(app);
+    });
+  </script>
+</html>
