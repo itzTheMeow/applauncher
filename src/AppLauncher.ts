@@ -4,7 +4,6 @@ import path from "path";
 const ico = path.join(__dirname, "../icon.ico");
 
 app.on("ready", () => {
-  require("electron").ipcRenderer.sendSync("a");
   let window = new BrowserWindow({
     width: 800,
     height: 600,
