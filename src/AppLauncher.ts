@@ -11,21 +11,38 @@ const apps: {
   launch: string;
 }[] = require("../apps.json");
 
-app.on("ready", () => {
-  let window = new BrowserWindow({
-    width: 800,
-    height: 600,
-    icon: ico,
-    webPreferences: {
-      preload: path.join(__dirname, "./preload.js"),
-      nodeIntegration: true,
-    },
-  });
+let ready = (win?: BrowserWindow) => {
+  let window =
+    win ||
+    new BrowserWindow({
+      width: 800,
+      height: 600,
+      icon: ico,
+      webPreferences: {
+        preload: path.join(__dirname, "./preload.js"),
+        nodeIntegration: true,
+      },
+    });
   window.removeMenu();
 
   function exit() {
     window.destroy();
     app.quit();
+  }
+
+  function restart() {
+    let newWin = new BrowserWindow({
+      width: 800,
+      height: 600,
+      icon: ico,
+      webPreferences: {
+        preload: path.join(__dirname, "./preload.js"),
+        nodeIntegration: true,
+      },
+    });
+    window.destroy();
+    tray.destroy();
+    ready(newWin);
   }
 
   let tray = new Tray(ico);
@@ -36,6 +53,7 @@ app.on("ready", () => {
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: "Open DevTools", click: () => window.webContents.openDevTools() },
+      { label: "Restart", click: restart },
       { label: "Exit", click: exit },
     ])
   );
@@ -67,4 +85,6 @@ app.on("ready", () => {
       sub.unref();
     }
   });
-});
+};
+
+app.on("ready", () => ready());

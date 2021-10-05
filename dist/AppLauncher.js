@@ -8,20 +8,35 @@ var electron_1 = require("electron");
 var path_1 = __importDefault(require("path"));
 var ico = path_1.default.join(__dirname, "../icon.ico");
 var apps = require("../apps.json");
-electron_1.app.on("ready", function () {
-    var window = new electron_1.BrowserWindow({
-        width: 800,
-        height: 600,
-        icon: ico,
-        webPreferences: {
-            preload: path_1.default.join(__dirname, "./preload.js"),
-            nodeIntegration: true,
-        },
-    });
+var ready = function (win) {
+    var window = win ||
+        new electron_1.BrowserWindow({
+            width: 800,
+            height: 600,
+            icon: ico,
+            webPreferences: {
+                preload: path_1.default.join(__dirname, "./preload.js"),
+                nodeIntegration: true,
+            },
+        });
     window.removeMenu();
     function exit() {
         window.destroy();
         electron_1.app.quit();
+    }
+    function restart() {
+        var newWin = new electron_1.BrowserWindow({
+            width: 800,
+            height: 600,
+            icon: ico,
+            webPreferences: {
+                preload: path_1.default.join(__dirname, "./preload.js"),
+                nodeIntegration: true,
+            },
+        });
+        window.destroy();
+        tray.destroy();
+        ready(newWin);
     }
     var tray = new electron_1.Tray(ico);
     tray.on("click", function (e) {
@@ -29,6 +44,7 @@ electron_1.app.on("ready", function () {
     });
     tray.setContextMenu(electron_1.Menu.buildFromTemplate([
         { label: "Open DevTools", click: function () { return window.webContents.openDevTools(); } },
+        { label: "Restart", click: restart },
         { label: "Exit", click: exit },
     ]));
     tray.on("right-click", function () {
@@ -59,4 +75,5 @@ electron_1.app.on("ready", function () {
             sub.unref();
         }
     });
-});
+};
+electron_1.app.on("ready", function () { return ready(); });
