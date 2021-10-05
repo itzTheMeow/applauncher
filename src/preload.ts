@@ -7,7 +7,6 @@ ipcRenderer.on("apps", (e, a) => {
 
 contextBridge.exposeInMainWorld("launchApp", function (path: string) {
   ipcRenderer.sendSync("launch", path);
-  return true;
 });
 contextBridge.exposeInMainWorld("exit", function () {
   ipcRenderer.sendSync("exit");
@@ -17,7 +16,6 @@ contextBridge.exposeInMainWorld("hide", function () {
 });
 contextBridge.exposeInMainWorld("devTools", function () {
   ipcRenderer.sendSync("devtools");
-  return true;
 });
 contextBridge.exposeInMainWorld("getApps", async function () {
   return new Promise((res) => {

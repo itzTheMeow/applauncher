@@ -4,13 +4,12 @@ import path from "path";
 
 const ico = path.join(__dirname, "../icon.ico");
 
-type app = {
+const apps: {
   id: string;
   name: string;
   icon: string;
   launch: string;
-};
-const apps: app[] = require("../apps.json");
+}[] = require("../apps.json");
 
 app.on("ready", () => {
   let window = new BrowserWindow({
@@ -23,7 +22,6 @@ app.on("ready", () => {
     },
   });
   window.removeMenu();
-  window.webContents.openDevTools();
 
   function exit() {
     window.destroy();
@@ -35,7 +33,12 @@ app.on("ready", () => {
     window.show();
   });
 
-  tray.setContextMenu(Menu.buildFromTemplate([{ label: "Exit", click: exit }]));
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      { label: "Open DevTools", click: () => window.webContents.openDevTools() },
+      { label: "Exit", click: exit },
+    ])
+  );
   tray.on("right-click", () => {
     tray.popUpContextMenu();
   });
@@ -55,7 +58,7 @@ app.on("ready", () => {
     else if (arg1 == "launch") {
       let launch = apps.find((a) => a.id == arg2);
       if (!launch) return;
-      console.log("launching " + launch.name);
+
       window.hide();
       const sub = spawn("START", [launch.launch], {
         detached: true,

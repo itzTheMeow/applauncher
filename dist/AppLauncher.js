@@ -19,7 +19,6 @@ electron_1.app.on("ready", function () {
         },
     });
     window.removeMenu();
-    window.webContents.openDevTools();
     function exit() {
         window.destroy();
         electron_1.app.quit();
@@ -28,7 +27,10 @@ electron_1.app.on("ready", function () {
     tray.on("click", function (e) {
         window.show();
     });
-    tray.setContextMenu(electron_1.Menu.buildFromTemplate([{ label: "Exit", click: exit }]));
+    tray.setContextMenu(electron_1.Menu.buildFromTemplate([
+        { label: "Open DevTools", click: function () { return window.webContents.openDevTools(); } },
+        { label: "Exit", click: exit },
+    ]));
     tray.on("right-click", function () {
         tray.popUpContextMenu();
     });
@@ -49,7 +51,6 @@ electron_1.app.on("ready", function () {
             var launch = apps.find(function (a) { return a.id == arg2; });
             if (!launch)
                 return;
-            console.log("launching " + launch.name);
             window.hide();
             var sub = (0, child_process_1.spawn)("START", [launch.launch], {
                 detached: true,

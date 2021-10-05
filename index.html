@@ -15,14 +15,29 @@
   <script>
     !(async function () {
       let apps = await getApps();
-      apps.forEach((a) => {
-        let app = document.getElementById("template").content.cloneNode(true);
-        app.querySelector(".app-name").innerHTML = a.name;
-        app.querySelector(".app").addEventListener("click", function () {
-          launchApp(a.id);
+      apps
+        .sort((a, b) => {
+          return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+        })
+        .forEach((a) => {
+          let app = document.getElementById("template").content.cloneNode(true);
+
+          let mainApp = app.querySelector(".app");
+          mainApp.addEventListener("click", function () {
+            setTimeout(function () {
+              launchApp(a.id);
+            }, 500);
+          });
+
+          let appName = app.querySelector(".app-name");
+          appName.innerHTML = a.name;
+
+          let appIcon = app.querySelector(".app-icon");
+          appIcon.src = a.icon;
+          appIcon.alt = a.id;
+
+          document.getElementById("apps").appendChild(app);
         });
-        document.getElementById("apps").appendChild(app);
-      });
     })();
   </script>
 </html>

@@ -43,7 +43,6 @@ electron_1.ipcRenderer.on("apps", function (e, a) {
 });
 electron_1.contextBridge.exposeInMainWorld("launchApp", function (path) {
     electron_1.ipcRenderer.sendSync("launch", path);
-    return true;
 });
 electron_1.contextBridge.exposeInMainWorld("exit", function () {
     electron_1.ipcRenderer.sendSync("exit");
@@ -53,7 +52,6 @@ electron_1.contextBridge.exposeInMainWorld("hide", function () {
 });
 electron_1.contextBridge.exposeInMainWorld("devTools", function () {
     electron_1.ipcRenderer.sendSync("devtools");
-    return true;
 });
 electron_1.contextBridge.exposeInMainWorld("getApps", function () {
     return __awaiter(this, void 0, void 0, function () {

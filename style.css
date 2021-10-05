@@ -1,6 +1,70 @@
+@font-face {
+  font-family: "Nevis";
+  src: url("./Nevis.ttf");
+}
+
+:root {
+  --per-page: 5;
+  --card-size: calc((93vw / var(--per-page)) - (var(--per-page) * 4px));
+
+  --light-background: rgb(250, 250, 250);
+  --dark-background: rgb(20, 20, 20);
+  --theme-background: var(--light-background);
+
+  --light-card: rgb(230, 230, 230);
+  --dark-card: rgb(60, 60, 60);
+  --theme-card: var(--light-card);
+
+  --light-card-hover: rgb(210, 210, 210);
+  --dark-card-hover: rgb(70, 70, 70);
+  --theme-card-hover: var(--light-card-hover);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Nevis";
+  text-align: center;
+  background-color: var(--theme-background);
+}
+
 .app {
-  width: 40px;
-  height: 40px;
-  background-color: rgb(230, 230, 230);
+  width: var(--card-size);
+  height: var(--card-size);
+  background-color: var(--theme-card);
   border-radius: 12px;
+  display: inline-block;
+  margin: 4px;
+  cursor: pointer;
+  padding: 4px;
+  position: relative;
+  overflow-wrap: break-word;
+}
+.app:hover {
+  background-color: var(--theme-card-hover);
+}
+.app:active {
+  transform: translateY(2px);
+}
+
+.app-icon {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  height: 35%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.app-name {
+  font-size: 4vmin;
+  width: 100%;
+  position: absolute;
+  top: calc(15% + 35% + 4%);
+  left: 50%;
+  transform: translateX(-50%);
+  user-select: none;
 }
