@@ -68,7 +68,7 @@ var ready = function (win) {
             if (!launch)
                 return;
             window.hide();
-            var sub = (0, child_process_1.spawn)("START", ["\"" + launch.launch + "\"", "\"" + launch.launch + "\"", "/b"], {
+            var sub = (0, child_process_1.spawn)("START", ["\"" + launch.launch + "\"", "\"" + launch.launch + "\""], {
                 detached: true,
                 shell: true,
             });

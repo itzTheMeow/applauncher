@@ -78,7 +78,7 @@ let ready = (win?: BrowserWindow) => {
       if (!launch) return;
 
       window.hide();
-      const sub = spawn("START", [`"${launch.launch}"`, `"${launch.launch}"`, "/b"], {
+      const sub = spawn("START", [`"${launch.launch}"`, `"${launch.launch}"`], {
         detached: true,
         shell: true,
       });
