@@ -1,7 +1,16 @@
-import { app, BrowserWindow, Menu, Tray, ipcRenderer } from "electron";
+import { execFile, execFileSync, spawn } from "child_process";
+import { app, BrowserWindow, Menu, Tray, ipcMain } from "electron";
 import path from "path";
 
 const ico = path.join(__dirname, "../icon.ico");
+
+type app = {
+  id: string;
+  name: string;
+  icon: string;
+  launch: string;
+};
+const apps: app[] = require("../apps.json");
 
 app.on("ready", () => {
   let window = new BrowserWindow({
@@ -10,6 +19,7 @@ app.on("ready", () => {
     icon: ico,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
+      nodeIntegration: true,
     },
   });
   window.removeMenu();
@@ -37,16 +47,21 @@ app.on("ready", () => {
     window.hide();
   });
 
-  setInterval(function () {
-    let shouldExit = ipcRenderer.sendSync("shouldExit");
-    if (shouldExit) exit();
-
-    let shouldDevTools = ipcRenderer.sendSync("shouldExit");
-    if (shouldDevTools) window.webContents.openDevTools();
-
-    let launching = ipcRenderer.sendSync("launching");
-    if (launching) {
-      // launch
+  window.webContents.send("apps", apps);
+  window.webContents.on("ipc-message-sync", (e, arg1, arg2) => {
+    if (arg1 == "exit") exit();
+    else if (arg1 == "hide") window.hide();
+    else if (arg1 == "devtools") window.webContents.openDevTools();
+    else if (arg1 == "launch") {
+      let launch = apps.find((a) => a.id == arg2);
+      if (!launch) return;
+      console.log("launching " + launch.name);
+      window.hide();
+      const sub = spawn("START", [launch.launch], {
+        detached: true,
+        shell: true,
+      });
+      sub.unref();
     }
   });
 });

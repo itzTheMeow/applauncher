@@ -3,17 +3,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var child_process_1 = require("child_process");
 var electron_1 = require("electron");
 var path_1 = __importDefault(require("path"));
 var ico = path_1.default.join(__dirname, "../icon.ico");
+var apps = require("../apps.json");
 electron_1.app.on("ready", function () {
-    require("electron").ipcRenderer.sendSync("a");
     var window = new electron_1.BrowserWindow({
         width: 800,
         height: 600,
         icon: ico,
         webPreferences: {
             preload: path_1.default.join(__dirname, "./preload.js"),
+            nodeIntegration: true,
         },
     });
     window.removeMenu();
@@ -35,16 +37,25 @@ electron_1.app.on("ready", function () {
         e.preventDefault();
         window.hide();
     });
-    setInterval(function () {
-        var shouldExit = electron_1.ipcRenderer.sendSync("shouldExit");
-        if (shouldExit)
+    window.webContents.send("apps", apps);
+    window.webContents.on("ipc-message-sync", function (e, arg1, arg2) {
+        if (arg1 == "exit")
             exit();
-        var shouldDevTools = electron_1.ipcRenderer.sendSync("shouldExit");
-        if (shouldDevTools)
+        else if (arg1 == "hide")
+            window.hide();
+        else if (arg1 == "devtools")
             window.webContents.openDevTools();
-        var launching = electron_1.ipcRenderer.sendSync("launching");
-        if (launching) {
-            // launch
+        else if (arg1 == "launch") {
+            var launch = apps.find(function (a) { return a.id == arg2; });
+            if (!launch)
+                return;
+            console.log("launching " + launch.name);
+            window.hide();
+            var sub = (0, child_process_1.spawn)("START", [launch.launch], {
+                detached: true,
+                shell: true,
+            });
+            sub.unref();
         }
     });
 });

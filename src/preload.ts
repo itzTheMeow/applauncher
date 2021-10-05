@@ -1,27 +1,30 @@
-import { contextBridge, ipcMain } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 
-let shouldExit = false;
-let shouldDevTools = false;
-let launching = [];
-
-ipcMain.on("synchronous-message", (event, arg) => {
-  if (arg == "shouldExit") {
-    event.returnValue = shouldExit;
-    shouldExit = false;
-  } else if (arg == "shouldDevTools") {
-    event.returnValue = shouldDevTools;
-    shouldDevTools = false;
-  } else if (arg == "launching") {
-    event.returnValue = launching.shift();
-  }
+let apps = [];
+ipcRenderer.on("apps", (e, a) => {
+  apps = a;
 });
 
 contextBridge.exposeInMainWorld("launchApp", function (path: string) {
-  launching.push(path);
+  ipcRenderer.sendSync("launch", path);
+  return true;
 });
 contextBridge.exposeInMainWorld("exit", function () {
-  shouldExit = true;
+  ipcRenderer.sendSync("exit");
+});
+contextBridge.exposeInMainWorld("hide", function () {
+  ipcRenderer.sendSync("hide");
 });
 contextBridge.exposeInMainWorld("devTools", function () {
-  shouldDevTools = true;
+  ipcRenderer.sendSync("devtools");
+  return true;
+});
+contextBridge.exposeInMainWorld("getApps", async function () {
+  return new Promise((res) => {
+    function seeApps() {
+      if (!apps.length) setTimeout(seeApps, 75);
+      res(apps);
+    }
+    seeApps();
+  });
 });
