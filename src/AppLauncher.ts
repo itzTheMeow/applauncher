@@ -60,7 +60,7 @@ app.on("ready", () => {
       if (!launch) return;
 
       window.hide();
-      const sub = spawn("START", [launch.launch], {
+      const sub = spawn("START", [`"${launch.launch}"`, `"${launch.launch}"`, "/b"], {
         detached: true,
         shell: true,
       });

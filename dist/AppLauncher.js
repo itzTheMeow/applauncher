@@ -52,7 +52,7 @@ electron_1.app.on("ready", function () {
             if (!launch)
                 return;
             window.hide();
-            var sub = (0, child_process_1.spawn)("START", [launch.launch], {
+            var sub = (0, child_process_1.spawn)("START", ["\"" + launch.launch + "\"", "\"" + launch.launch + "\"", "/b"], {
                 detached: true,
                 shell: true,
             });
